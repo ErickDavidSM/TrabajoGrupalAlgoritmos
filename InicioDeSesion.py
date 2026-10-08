@@ -3,6 +3,7 @@ import random
 import string
 import os
 import time
+import GUI
 
 #Declaro variables
 contadorShift=True
