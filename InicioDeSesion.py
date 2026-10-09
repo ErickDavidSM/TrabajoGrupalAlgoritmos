@@ -3,7 +3,8 @@ import random
 import string
 import os
 import time
-import GUI
+
+from tkinter import *
 
 #Declaro variables
 contadorShift=True
@@ -32,7 +33,16 @@ def LittleCaesars(PlainText):
     CrypText=PlainText.translate(Tabla)
     return(CrypText)
 
+
+
+
 #Sign in, ingreso inicial de nombre y contrasena
+
+
+#ENTRY
+
+
+
 Nombre=input("Entre su nombre de usuario para la sesion>>>  ")
 while Nombre=='':
     Nombre=input("Entre un nombre valido>>>  ")
@@ -43,12 +53,19 @@ while ContraCrudo=='' or ContraCrudo==Nombre or len(ContraCrudo)<10:
     print("Debe de ser distinta al Nombre de Usuario y tener mas de 10 caracteres")
     ContraCrudo=input("Entre una contraseña valida>>>  ")
 ContraCryp=LittleCaesars(ContraCrudo)
+
+
+
 #Limpio terminal para esconder contrasena
 os.system('clear')
 #Hago una confirmacion
+
+
 NombrePrueba=input('Confirme usuario>>>  ')
 ContraPrueba=input("Confirme su contraseña>>>  ") 
 ContraPruebaCrypt=LittleCaesars(ContraPrueba)
+
+
 #No dejo proseguir hasta que la confirmacion sea exitosa
 while(NombrePrueba!=Nombre or ContraPruebaCrypt!=ContraCryp):
     #Contador como medida contra ataque brute force para que sea mas elegante. Profe porfa denos puntos
