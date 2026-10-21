@@ -3,7 +3,6 @@ from tkinter import messagebox
 
 import random
 import string
-import os
 import time
 contadorShift=True
 Shift=0
@@ -38,17 +37,27 @@ window=Tk()
 window.geometry('1920x1080')
 window.title('Cajero Automatico')
 window.config(background='#A9CDD4')
-Bienvenido=Label(window,text='Bienvenido',font=('arial', 40, 'bold'),fg='#477A91', bg='#FFFFFF'
-                 ,bd=10, relief=SUNKEN)
+
+
+#CAJERO
+
+def Cajero():
+
+    Label(window,text=f"Usuario: {Nombre}-{ContraCryp}",font=('arial', 10, 'bold'),fg='#477A91', bg='#FFFFFF'
+                 ,bd=10, relief=SUNKEN).pack()
 
 
 
 
-#BOTON PARA INICIO DE SESION
+
+# INICIO DE SESION
+
+
 def AbrirInicioDeSesion():
     global Nombre
     global ContraCrudo
     global ContraCryp
+    global Cajero
 
 
         
@@ -136,10 +145,13 @@ def AbrirInicioDeSesion():
             else:
                 Apagar(EnterContra)  
                 Apagar(ContraEntry)
-                LLaveDeAcceso=True
-                if LLaveDeAcceso:
-                    Info(f"Login existoso. Bienvenido {Nombre}-{ContraCryp}")
-                    InicioDeSesion_window.destroy()
+                
+                Info(f"Login existoso. Bienvenido {Nombre}-{ContraCryp}")
+                InicioDeSesion_window.destroy()
+                IDS_Button.destroy()
+                Bienvenido.destroy()
+                Cajero()
+              
         else:    
             ContraCrudo=ContraEntry.get()
 
@@ -152,6 +164,7 @@ def AbrirInicioDeSesion():
                 Apagar(ContraEntry)
                 ContraCryp=LittleCaesars(ContraCrudo)
                 print(ContraCryp)
+                Info("Confirme usuario y contraseña, cierre la ventana y presione el botón de nuevo si desea reiniciar el proceso.")
                 Confirmacion=True
                 Encender(EnterNombre)
                 Encender(NombreEntry)
@@ -203,8 +216,11 @@ IDS_Button.config(command=AbrirInicioDeSesion,  font=('Arial',20), fg='#477A91'
 IDS_Button.place(x=770, y=500)
 
 
+Bienvenido=Label(window,text='Bienvenido',font=('arial', 40, 'bold'),fg='#477A91', bg='#FFFFFF'
+                 ,bd=10, relief=SUNKEN)
+Bienvenido.place(x=770, y=250)
 
 
 
-Bienvenido.place(x=770, y=100)
+
 window.mainloop()

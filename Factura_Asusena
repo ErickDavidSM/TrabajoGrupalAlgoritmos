@@ -1,0 +1,84 @@
+from tkinter import *
+window=Tk()
+window.geometry('600x600')
+window.title('Cajero Automatico')
+window.config(background='#A9CDD4')
+
+productos = [
+    ["Zanahoria", 5, 20],
+    ["Tomate", 10, 20],
+    ["Papa", 8, 15],
+    ["Cebolla", 6, 15],
+    ["Lechuga", 4, 10]
+]
+
+factura = []
+continuar = True
+
+
+Label(window, text="CAJERO").pack()
+Label(window,text="PRODUCTOS DISPONIBLES").pack()
+
+for i in range(len(productos)):
+    Label(window, text=(i + 1, "-", productos[i][0],
+            "Precio: Q", productos[i][1],
+            "Disponibles:", productos[i][2])).pack()
+Label(window, text="0 - Terminar compra").pack()
+
+opcion_Box=Entry(window,font=('Arial Black',40),bg='#111111',fg='#ffffff', width=10)
+opcion_Box.pack()
+
+
+
+
+
+def opcion_submit():
+    global opcion,productos
+    opcion = opcion_Box.get()
+
+
+    if opcion.isdigit():
+        opcion = int(opcion)
+
+        if opcion == 0:
+            continuar = False
+
+        elif opcion >= 1 and opcion <= len(productos):
+            posicion = opcion - 1
+
+            nombre = productos[posicion][0]
+            precio = productos[posicion][1]
+            disponible = productos[posicion][2]
+
+            if disponible > 0:
+                cantidad_texto = input("Ingrese la cantidad: ")
+
+                if cantidad_texto.isdigit():
+                    cantidad = int(cantidad_texto)
+
+                    if cantidad > 0 and cantidad <= disponible:
+                        factura.append([nombre, precio, cantidad])
+                        productos[posicion][2] -= cantidad
+
+                        print("Producto agregado correctamente.")
+                    else:
+                        print("Cantidad incorrecta o insuficiente.")
+                else:
+                    print("Ingrese una cantidad numerica.")
+            else:
+                print("Producto agotado.")
+
+        else:
+            print("Opcion incorrecta.")
+    else:
+        print("Debe ingresar un numero.")
+
+
+
+SubOpc_Button= Button(window, text='Enter')
+SubOpc_Button.config(command=opcion_submit,  font=('Arial',10), fg='#477A91')
+SubOpc_Button.pack()
+
+
+
+window.mainloop()
