@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 window=Tk()
 window.geometry('600x600')
 window.title('Cajero Automatico')
@@ -15,25 +16,92 @@ productos = [
 factura = []
 continuar = True
 
+def delete(x):
+    x.delete(0, END)
+def Encender(x):
+    x.config(state=NORMAL)
+def Apagar(x):
+    x.config(state=DISABLED)
+def Info(x):
+    messagebox.showinfo(title='Aviso', message=x)
 
-Label(window, text="CAJERO").pack()
-Label(window,text="PRODUCTOS DISPONIBLES").pack()
-
-for i in range(len(productos)):
-    Label(window, text=(i + 1, "-", productos[i][0],
-            "Precio: Q", productos[i][1],
-            "Disponibles:", productos[i][2])).pack()
-Label(window, text="0 - Terminar compra").pack()
-
-opcion_Box=Entry(window,font=('Arial Black',40),bg='#111111',fg='#ffffff', width=10)
-opcion_Box.pack()
+Inventario= Frame(window)
 
 
+def Actualizar():
+    # Source - https://stackoverflow.com/a/28623781
+# Posted by Tom.Slick, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-10-21, License - CC BY-SA 4.0
+    for widget in Inventario.winfo_children():
+        widget.destroy()
+
+    for i in range(len(productos)):
+        Label(Inventario, text=(i + 1, "-", productos[i][0],
+                "Precio: Q", productos[i][1],
+                "Disponibles:", productos[i][2])).pack()
+    Label(Inventario, text="0 - Terminar compra").pack()
 
 
+
+def cero_factura ():
+    global Factura_window
+
+    Factura_window=Toplevel()
+
+        
+    Label(Factura_window, text= "FACTURA").pack()
+
+    subtotal = 0
+
+    if len(factura) == 0:
+        Info("No se compraron productos.")
+    else:
+        Label(Factura_window, text= "Producto | Cantidad | Precio | Total").pack()
+
+        for producto in factura:
+            nombre = producto[0]
+            precio = producto[1]
+            cantidad = producto[2]
+
+            total = precio * cantidad
+            subtotal += total
+
+            Label(Factura_window, text= f'{nombre} | {cantidad} | Q.{precio} | Q.{total}').pack()
+
+        
+        Label(Factura_window, text=f"SUBTOTAL: Q.{ subtotal}").pack()
+
+
+    Label(Factura_window, text="Gracias por su compra.").pack()
+
+
+def cantidad_submit():
+     global opcion,productos,nombre,precio, posicion,disponible
+
+     
+     cantidad_texto = cantidad_Box.get()
+
+     if cantidad_texto.isdigit():
+        cantidad = int(cantidad_texto)
+    
+        if cantidad > 0 and cantidad <= disponible:
+            factura.append([nombre, precio, cantidad])
+            productos[posicion][2] -= cantidad
+    
+            Info("Producto agregado correctamente.")
+            Encender(opcion_Box)
+            Encender(SubOpc_Button)
+            Apagar(cantidad_Box)
+            Apagar(Cantidad_Button)
+            Actualizar()
+            
+        else:
+            Info("Cantidad incorrecta o insuficiente.")
+     else:
+        Info("Ingrese una cantidad numerica.")  
 
 def opcion_submit():
-    global opcion,productos
+    global opcion,productos,nombre,precio, posicion,disponible
     opcion = opcion_Box.get()
 
 
@@ -41,7 +109,7 @@ def opcion_submit():
         opcion = int(opcion)
 
         if opcion == 0:
-            continuar = False
+            cero_factura()
 
         elif opcion >= 1 and opcion <= len(productos):
             posicion = opcion - 1
@@ -51,34 +119,50 @@ def opcion_submit():
             disponible = productos[posicion][2]
 
             if disponible > 0:
-                cantidad_texto = input("Ingrese la cantidad: ")
-
-                if cantidad_texto.isdigit():
-                    cantidad = int(cantidad_texto)
-
-                    if cantidad > 0 and cantidad <= disponible:
-                        factura.append([nombre, precio, cantidad])
-                        productos[posicion][2] -= cantidad
-
-                        print("Producto agregado correctamente.")
-                    else:
-                        print("Cantidad incorrecta o insuficiente.")
-                else:
-                    print("Ingrese una cantidad numerica.")
+                Apagar(opcion_Box)
+                Apagar(SubOpc_Button)
+                Encender(cantidad_Box)
+                Encender(Cantidad_Button)
+                
             else:
-                print("Producto agotado.")
+                Info("Producto agotado.")
 
         else:
-            print("Opcion incorrecta.")
+            Info("Opcion incorrecta.")
     else:
-        print("Debe ingresar un numero.")
+        Info("Debe ingresar un numero.")
 
+
+
+
+opcion_Box=Entry(window,font=('Arial Black',40),bg='#111111',fg='#ffffff', width=10)
+opcion_Box.pack()
 
 
 SubOpc_Button= Button(window, text='Enter')
 SubOpc_Button.config(command=opcion_submit,  font=('Arial',10), fg='#477A91')
 SubOpc_Button.pack()
 
+
+Label(window, text="Ingresar cantidad").pack()
+cantidad_Box=Entry(window, font=('Arial', 40),bg='#111111',fg='#ffffff', width=10 )
+cantidad_Box.pack()
+
+
+Cantidad_Button= Button(window, text='Enter')
+Cantidad_Button.config(command=cantidad_submit,  font=('Arial',10), fg='#477A91')
+Cantidad_Button.pack()
+Apagar(Cantidad_Button)
+Apagar(cantidad_Box)
+
+
+
+Label(window, text="CAJERO").pack()
+
+Label(window,text="PRODUCTOS DISPONIBLES").pack()
+
+Inventario.pack()
+Actualizar()
 
 
 window.mainloop()
