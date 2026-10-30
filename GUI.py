@@ -282,24 +282,37 @@ def cero_factura ():
         
         Label(Factura_window, text= "Producto | Cantidad | Precio | Total").pack()
 
+## ORDENAMIENTO BURBUJA
         for producto in factura:
             nombre = producto[0]
             precio = producto[1]
             cantidad = producto[2]
-
             total = precio * cantidad
-            subtotal += total
+            producto.append(total)
+
+        n = len(factura)
+        for i in range(n-1):
+            for j in range(n-i-1):
+                if factura[j][3] > factura[j+1][3]:
+                    factura[j], factura[j+1] = factura[j+1], factura[j]
+
+        for producto in factura:
+            nombre = producto[0]
+            precio = producto[1]
+            cantidad = producto[2]
+            total = producto[3]
+            subtotal+=total
 
             Label(Factura_window, text= f'{nombre} | {cantidad} | Q.{precio} | Q.{total}').pack()
 
         
         Label(Factura_window, text=f"SUBTOTAL: Q.{ subtotal}").pack()
-
         Label(Factura_window, text="Gracias por su compra.").pack()
        
 
     def Guardar_Factura():
         global Factura_Archivo
+
         Factura_Archivo= filedialog.asksaveasfile(defaultextension='.txt')
 
         if Factura_Archivo is None:
