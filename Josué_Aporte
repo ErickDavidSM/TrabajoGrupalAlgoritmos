@@ -1,0 +1,199 @@
+# 0
+
+def administrar_productos(productos):
+    print("\nADMINISTRAR PRODUCTOS")
+    print("1 - Agregar nuevo producto")
+    print("0 - Modificar cantidad de un producto")
+
+    while True:
+        opcion = input("Seleccione una opcion: ").strip()
+
+        if opcion == "1" or opcion == "0":
+            break
+
+        print("Debe ingresar 1 o 0.")
+
+    if opcion == "1":
+        # Ingresar el nombre del nuevo producto.
+        while True:
+            nombre = input("Nombre del producto: ").strip()
+
+            if nombre == "":
+                print("El nombre no puede estar vacio.")
+                continue
+
+            existe = False
+
+            for producto in productos:
+                if producto[0].lower() == nombre.lower():
+                    existe = True
+                    break
+
+            if existe:
+                print("Ese producto ya existe.")
+            else:
+                break
+
+        # Ingresar un precio positivo.
+        while True:
+            precio_texto = input("Precio del producto: Q ").strip()
+
+            try:
+                precio = float(precio_texto)
+
+                if 0 < precio < float("inf"):
+                    break
+
+                print("El precio debe ser mayor que cero.")
+            except ValueError:
+                print("Ingrese un precio numerico. Ejemplo: 5.50")
+
+        # Ingresar la cantidad inicial.
+        while True:
+            cantidad_texto = input("Cantidad disponible: ").strip()
+
+            if cantidad_texto.isdecimal():
+                cantidad = int(cantidad_texto)
+                break
+
+            print("Ingrese una cantidad entera igual o mayor que cero.")
+
+        productos.append([nombre, precio, cantidad])
+
+        print("Producto agregado correctamente.")
+
+    else:
+        print("\nPRODUCTOS EXISTENTES")
+
+        for i in range(len(productos)):
+            print(i + 1, "-", productos[i][0],
+                  "Cantidad actual:", productos[i][2])
+
+        # Seleccionar el producto existente.
+        while True:
+            seleccion = input(
+                "Seleccione el producto que desea modificar: "
+            ).strip()
+
+            if seleccion.isdecimal():
+                seleccion = int(seleccion)
+
+                if 1 <= seleccion <= len(productos):
+                    posicion = seleccion - 1
+                    break
+
+            print("Seleccione un numero de producto valido.")
+
+        # Modificar exclusivamente la cantidad.
+        while True:
+            cantidad_texto = input(
+                "Ingrese la nueva cantidad disponible: "
+            ).strip()
+
+            if cantidad_texto.isdecimal():
+                productos[posicion][2] = int(cantidad_texto)
+                break
+
+            print("Ingrese una cantidad entera igual o mayor que cero.")
+
+        print("Cantidad actualizada correctamente.")
+        print("Producto:", productos[posicion][0])
+        print("Precio: Q", productos[posicion][1])
+        print("Disponibles:", productos[posicion][2])
+
+
+productos = [
+    ["Zanahoria", 5, 20],
+    ["Tomate", 10, 20],
+    ["Papa", 8, 15],
+    ["Cebolla", 6, 15],
+    ["Lechuga", 4, 10]
+]
+
+factura = []
+continuar = True
+
+while continuar:
+    print("\nCAJERO")
+    print("PRODUCTOS DISPONIBLES")
+
+    for i in range(len(productos)):
+        print(i + 1, "-", productos[i][0],
+              "Precio: Q", productos[i][1],
+              "Disponibles:", productos[i][2])
+
+    print("0 - Terminar compra")
+
+    opcion = input("Seleccione un producto: ").strip()
+
+    if opcion.isdecimal():
+        opcion = int(opcion)
+
+        if opcion == 0:
+            continuar = False
+
+        elif opcion >= 1 and opcion <= len(productos):
+            posicion = opcion - 1
+
+            nombre = productos[posicion][0]
+            precio = productos[posicion][1]
+            disponible = productos[posicion][2]
+
+            if disponible > 0:
+                cantidad_texto = input("Ingrese la cantidad: ").strip()
+
+                if cantidad_texto.isdecimal():
+                    cantidad = int(cantidad_texto)
+
+                    if cantidad > 0 and cantidad <= disponible:
+                        factura.append([nombre, precio, cantidad])
+                        productos[posicion][2] -= cantidad
+
+                        print("Producto agregado correctamente.")
+                    else:
+                        print("Cantidad incorrecta o insuficiente.")
+                else:
+                    print("Ingrese una cantidad numerica entera.")
+            else:
+                print("Producto agotado.")
+
+        else:
+            print("Opcion incorrecta.")
+    else:
+        print("Debe ingresar un numero.")
+
+subtotal = 0
+
+if len(factura) == 0:
+    # Reemplaza el mensaje "No se compraron productos".
+    administrar_productos(productos)
+
+    print("\nLISTA DE PRODUCTOS ACTUALIZADA")
+
+    for i in range(len(productos)):
+        print(i + 1, "-", productos[i][0],
+              "Precio: Q", productos[i][1],
+              "Disponibles:", productos[i][2])
+
+else:
+    print("\nFACTURA")
+    print("Producto | Cantidad | Precio | Total")
+
+    for producto in factura:
+        nombre = producto[0]
+        precio = producto[1]
+        cantidad = producto[2]
+
+        total = precio * cantidad
+        subtotal += total
+
+        print(
+            f"{nombre} | {cantidad} | "
+            f"Q {precio:.2f} | Q {total:.2f}"
+        )
+
+    print("")
+    print(f"SUBTOTAL: Q {subtotal:.2f}")
+
+print("")
+print("Gracias por su compra.")

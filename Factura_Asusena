@@ -5,6 +5,9 @@ window.geometry('600x600')
 window.title('Cajero Automatico')
 window.config(background='#A9CDD4')
 
+
+
+
 productos = [
     ["Zanahoria", 5, 20],
     ["Tomate", 10, 20],
@@ -27,6 +30,176 @@ def Info(x):
 
 
 
+#Aporte Josue
+def administrar_productos(productos):
+    global Admin, Admin_Opcion
+    def reiniciar():
+        global Adcant, Adprecio, Adnombre, Admin_Opcion, cantidad_texto, seleccion
+        Encender(SubOpc_Button)
+        Encender(opcion_Box)
+        Admin.destroy()
+        Adcant=0
+        Adprecio=0
+        Adnombre=''
+        Admin_Opcion=''
+        cantidad_texto=''
+        seleccion=''
+        Actualizar()
+
+    Apagar(SubOpc_Button)
+    Apagar(opcion_Box)
+
+
+    Admin=Toplevel()
+    def callback_IDS():
+        if messagebox.askokcancel('Aviso','Saliendo del modo administrador'):
+            reiniciar()
+    Admin.protocol("WM_DELETE_WINDOW", callback_IDS)
+    Admin_Opcion=''
+
+    Label(Admin,text="ADMINISTRAR PRODUCTOS", bg='black', fg='white').pack()
+    Label(Admin, text="1 - Agregar nuevo producto", bg='black', fg='white' ).pack()
+    Label(Admin,text= "0 - Modificar cantidad de un producto", bg='black', fg='white').pack()
+
+
+    def SubmitAdOpc():
+        global Admin_Opcion
+        Admin_Opcion=AdOpc_Box.get()
+        delete(AdOpc_Box)
+
+        if Admin_Opcion == "1":
+            
+
+            
+            # Ingresar el nombre del nuevo producto.
+ # Ingresar un precio positivo.
+            def CantidadInicial():
+                 global Adcant, Adnombre, Adprecio
+    
+                
+                 
+                 cantidad_texto = AdOpc_Box.get()
+ 
+                 if cantidad_texto.isdecimal():
+                     Adcant = int(cantidad_texto)
+                     productos.append([Adnombre, Adprecio, Adcant])  
+                     Info("Producto agregado correctamente.")
+                     reiniciar()
+                 else:
+                     Info("Ingrese una cantidad entera igual o mayor que cero.")
+ 
+           
+            def Precio():
+                global Adprecio
+                precio_texto = AdOpc_Box.get()
+                try:
+                    Adprecio = float(precio_texto)
+
+                    if 0 < Adprecio < float("inf"):
+                        InfoLabel.config(text='Ingrese cantidad del nuevo producto')
+                        delete(AdOpc_Box)
+                        AdOpc_Button.config(command= CantidadInicial)
+
+
+                    else:
+                        Info("El precio debe ser mayor que cero.")
+                except ValueError:
+                    Info("Ingrese un precio numerico. Ejemplo: 5.50")
+
+            # Ingresar la cantidad inicial.
+            
+            def Nombre():
+                global Adnombre
+
+
+                Adnombre = AdOpc_Box.get()
+
+                if Adnombre == "":
+                    Info("El nombre no puede estar vacio.")
+                
+                else:
+                    existe = False
+                    for producto in productos:
+                        if producto[0].lower() == Adnombre.lower():
+                            existe = True
+
+                    if existe:
+                        Info("Ese producto ya existe.")
+                    else:
+                        InfoLabel.config(text='Ingrese precio')
+                        delete(AdOpc_Box)
+                        AdOpc_Button.config(command= Precio)
+                        
+
+                    
+            InfoLabel.config(text='Ingrese nombre del nuevo producto')
+            AdOpc_Button.config(command= Nombre)
+
+        
+        elif Admin_Opcion=='0':
+
+
+            # Modificar exclusivamente la cantidad.
+            def ModificarCantidad():
+                global posicion
+
+                cantidad_texto = AdOpc_Box.get()
+
+                if cantidad_texto.isdecimal():
+                    productos[posicion][2] = int(cantidad_texto)
+                    Info("Cantidad actualizada correctamente.")
+                    reiniciar()
+                elif cantidad_texto== 'Delete':
+                    productos.remove(productos[posicion])
+                    reiniciar()
+                else:
+                    Info("Ingrese una cantidad entera igual o mayor que cero. Para eliminar escriba -- Delete")
+
+           
+
+            # Seleccionar el producto existente.
+            def Seleccionar():
+                
+                global posicion
+                seleccion = AdOpc_Box.get()
+
+                if seleccion.isdecimal():
+                    seleccion = int(seleccion)
+
+                    if 1 <= seleccion <= len(productos):
+                        posicion = seleccion - 1
+                        AdOpc_Button.config(command=ModificarCantidad)
+                        delete(AdOpc_Box)
+                        InfoLabel.config(text='Ingrese nueva cantidad del producto')
+                else:
+                    Info("Seleccione un numero de producto valido.")
+
+
+            InfoLabel.config(text='Seleccione Producto a modificar')
+            AdOpc_Button.config(command= Seleccionar)
+           
+        else:
+            Info('opcion incorrecta')
+            InfoLabel.config(text='Incorrecto, Ingrese 0 o 1')
+
+
+
+
+    for i in range(len(productos)):
+        Label(Admin, text=(i + 1, "-", productos[i][0],
+                    "Precio: Q", productos[i][1],
+                    "Disponibles:", productos[i][2])).pack()
+    AdOpc_Box= Entry(Admin)
+    AdOpc_Box.pack()
+
+    InfoLabel=Label(Admin, text='Ingrese 0 o 1')
+    InfoLabel.pack()
+
+    AdOpc_Button= Button(Admin, text= 'Enter', command= SubmitAdOpc)
+    AdOpc_Button.pack()
+
+
+
 
 def Actualizar():
     # Source - https://stackoverflow.com/a/28623781
@@ -44,18 +217,20 @@ def Actualizar():
 
 
 def cero_factura ():
-    global Factura_window
-
-    Factura_window=Toplevel()
-
-        
-    Label(Factura_window, text= "FACTURA").pack()
-
+    global Factura_windowv
+    
     subtotal = 0
 
+
+
     if len(factura) == 0:
-        Info("No se compraron productos.")
+        administrar_productos(productos)
+        Info("No se compraron productos, entrando a modo administrador")  
+
     else:
+        Factura_window=Toplevel()
+        Label(Factura_window, text= "FACTURA").pack()
+      
         Label(Factura_window, text= "Producto | Cantidad | Precio | Total").pack()
 
         for producto in factura:
@@ -72,7 +247,9 @@ def cero_factura ():
         Label(Factura_window, text=f"SUBTOTAL: Q.{ subtotal}").pack()
 
 
-    Label(Factura_window, text="Gracias por su compra.").pack()
+        Label(Factura_window, text="Gracias por su compra.").pack
+        for producto in factura:
+            factura.remove(producto)
 
 
 def cantidad_submit():
