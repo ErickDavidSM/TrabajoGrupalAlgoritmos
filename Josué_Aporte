@@ -1,5 +1,9 @@
 # 0
 
+## APORTE DE JOSUE: Modo admin. Josue informo de haber tenido un accidente y haber estado hospitalizado 
+## la semana que le tocaba entregar su aporte, me envio su codigo por whatsapp y lo pegue en el archivo
+## Josue_Aporte.
+
 def administrar_productos(productos):
     print("\nADMINISTRAR PRODUCTOS")
     print("1 - Agregar nuevo producto")

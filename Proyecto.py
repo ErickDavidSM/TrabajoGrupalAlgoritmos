@@ -250,7 +250,7 @@ def Actualizar():
         Label(Inventario, text=(i + 1, "-", productos[i][0],
                 "Precio: Q", productos[i][1],
                 "Disponibles:", productos[i][2])).pack()
-    Label(Inventario, text="0 - Terminar compra").pack()
+    Label(Inventario, text="0 - Terminar compra / Entrar modo Admin.").pack()
 
 
 def cero_factura ():
